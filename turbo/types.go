@@ -1,4 +1,4 @@
-package gpt35
+package turbo
 
 type RoleType string
 type ModelType string

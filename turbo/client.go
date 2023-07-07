@@ -1,4 +1,4 @@
-package gpt35
+package turbo
 
 import (
 	"bytes"
@@ -22,6 +22,7 @@ const (
 type Client struct {
 	client *http.Client
 	apiKey string
+	orgID  string
 	url    string
 }
 
@@ -63,7 +64,7 @@ func defaultOptions() *ClientOptions {
 }
 
 // NewClient creates new OpenAI client
-func NewClient(apiKey string, opts ...OptionFunc) (*Client, error) {
+func NewClient(apiKey, orgID string, opts ...OptionFunc) (*Client, error) {
 	params := defaultOptions()
 	for _, opt := range opts {
 		if err := opt(params); err != nil {
@@ -74,6 +75,7 @@ func NewClient(apiKey string, opts ...OptionFunc) (*Client, error) {
 	return &Client{
 		client: &http.Client{Transport: params.Transport},
 		apiKey: apiKey,
+		orgID:  orgID,
 		url:    params.URL,
 	}, nil
 }
@@ -92,6 +94,10 @@ func (c *Client) GetChat(r *Request) (*Response, error) {
 
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Bearer "+c.apiKey)
+
+	if c.orgID != "" {
+		req.Header.Set("OpenAI-Organization", c.orgID)
+	}
 
 	resp, err := c.client.Do(req)
 	if err != nil {
