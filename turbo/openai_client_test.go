@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-var _ = Describe("Vertexai", func() {
+var _ = Describe("Turbo", func() {
 
 	It("can get a chat response", func() {
 		c, _ := turbo.NewClient(os.Getenv("OPENAI_API_KEY"), os.Getenv("OPENAI_ORG"))
